@@ -54,7 +54,12 @@ authRouter.post("/login", async (req, res) => {
         expiresIn: "7h",
       });
 
-      res.cookie("token", token);
+      // res.cookie("token", token);
+      res.cookie("token", token, {
+        httpOnly: true,
+        secure: true, // required on Render (HTTPS)
+        sameSite: "None", // required to allow cross-origin cookies
+      });
 
       res.send(activeUser);
     } else {
