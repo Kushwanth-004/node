@@ -11,23 +11,39 @@ const { userRouter } = require("./routes/user");
 const cors = require("cors");
 const dotenv = require("dotenv");
 dotenv.config();
+
+const chatRouter = require("../src/routes/chatRouter");
+
 app.use(express.json());
 app.use(cookieParser());
-app.use(
-  cors({
-    origin: "http://localhost:5173",
-    credentials: true,
-  })
-);
+const corsOptions = {
+  origin: "http://localhost:5173",
+  credentials: true,
+  methods: ["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  optionsSuccessStatus: 200,
+};
+
+// Use this cors middleware globally
+app.use(cors(corsOptions));
+
+// Explicitly handle preflight requests
+app.options("*", cors(corsOptions));
+
+const initialiseSocket = require("./utils/socket");
 app.use("/", authRouter);
 app.use("/", profileRouter);
 app.use("/", requestRouter);
 app.use("/", userRouter);
+app.use("/", chatRouter);
 
+const { createServer } = require("node:http");
+const server = createServer(app);
+initialiseSocket(server);
 connectDB()
   .then(() => {
     console.log("Database connection established.......");
-    app.listen(process.env.PORT, () => {
+    server.listen(process.env.PORT, () => {
       console.log("Server created succesfully on port 8888");
     });
   })
