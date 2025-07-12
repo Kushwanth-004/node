@@ -5,7 +5,7 @@ const initialiseSocket = (server) => {
   const io = socket(server, {
     cors: {
       origin: "https://devtinder-web-p880.onrender.com",
-      Credentials: true,
+      credentials: true,
     },
   });
   io.on("connection", (socket) => {
