@@ -4,6 +4,8 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const dotenv = require("dotenv");
 
+dotenv.config();
+
 const authRouter = require("./routes/authRouter");
 const profileRouter = require("./routes/profile");
 const { requestRouter } = require("./routes/request");
@@ -11,22 +13,22 @@ const { userRouter } = require("./routes/user");
 const chatRouter = require("../src/routes/chatRouter");
 const initialiseSocket = require("./utils/socket");
 
-dotenv.config();
 const app = express();
 
+// ✅ Place CORS at the very top (before any middleware or routes)
 const corsOptions = {
-  origin: "https://devtinder-web-p880.onrender.com", // Your frontend Render URL
+  origin: "https://devtinder-web-p880.onrender.com",
   credentials: true,
-  methods: ["GET", "POST", "PATCH", "OPTIONS"],
-  // allowedHeaders: ["Content-Type", "Authorization"],
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
 };
+
 app.use(cors(corsOptions));
-app.options("*", cors(corsOptions));
-// === Middleware ===
+// app.options("*", cors(corsOptions)); // Preflight for all routes
+
+// ✅ Important: use middlewares after CORS
 app.use(express.json());
 app.use(cookieParser());
-
-// === CORS Configuration ===
 
 // === Routes ===
 app.use("/", authRouter);
@@ -44,11 +46,11 @@ initialiseSocket(server);
 const PORT = process.env.PORT || 8888;
 connectDB()
   .then(() => {
-    console.log(" Database connected");
+    console.log("✅ Database connected");
     server.listen(PORT, () => {
-      console.log(` Server running on port ${PORT}`);
+      console.log(`🚀 Server running on port ${PORT}`);
     });
   })
   .catch((err) => {
-    console.error(" Failed to connect to database:", err.message);
+    console.error("❌ Failed to connect to database:", err.message);
   });

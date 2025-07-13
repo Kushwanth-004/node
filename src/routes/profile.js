@@ -24,6 +24,7 @@ profileRouter.patch(
   userAuth,
   upload.single("photo"),
   async (req, res) => {
+    console.log("PATCH /profile/update HIT ✅"); 
     try {
       const user = req.user;
 
