@@ -17,8 +17,8 @@ const app = express();
 const corsOptions = {
   origin: "https://devtinder-web-p880.onrender.com", // Your frontend Render URL
   credentials: true,
-  methods: ["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
+  methods: ["GET", "POST", "PATCH", "OPTIONS"],
+  // allowedHeaders: ["Content-Type", "Authorization"],
 };
 app.use(cors(corsOptions));
 app.options("*", cors(corsOptions));
