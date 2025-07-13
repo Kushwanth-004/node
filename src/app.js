@@ -14,11 +14,6 @@ const initialiseSocket = require("./utils/socket");
 dotenv.config();
 const app = express();
 
-// === Middleware ===
-app.use(express.json());
-app.use(cookieParser());
-
-// === CORS Configuration ===
 const corsOptions = {
   origin: "https://devtinder-web-p880.onrender.com", // Your frontend Render URL
   credentials: true,
@@ -27,6 +22,11 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 app.options("*", cors(corsOptions));
+// === Middleware ===
+app.use(express.json());
+app.use(cookieParser());
+
+// === CORS Configuration ===
 
 // === Routes ===
 app.use("/", authRouter);
