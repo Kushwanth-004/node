@@ -10,17 +10,17 @@ const initialiseSocket = (server) => {
   });
 
   io.on("connection", (socket) => {
-    console.log("✅ A user connected:", socket.id);
+    console.log(" A user connected:", socket.id);
 
     socket.on("joinChat", ({ userid, targetUserId, username }) => {
       if (!userid || !targetUserId) {
-        console.log("❌ Invalid room join - Missing user ID");
+        console.log(" Invalid room join - Missing user ID");
         return;
       }
 
       const roomid = [userid, targetUserId].sort().join("-");
       socket.join(roomid);
-      console.log(`✅ ${username} joined room: ${roomid}`);
+      console.log(` ${username} joined room: ${roomid}`);
     });
 
     socket.on("send_message", async ({ newMessage, username, userid, targetUserId }) => {
@@ -47,7 +47,7 @@ const initialiseSocket = (server) => {
           time: new Date(),
         };
 
-        // ✅ Send to everyone in the room (including sender)
+        //  Send to everyone in the room (including sender)
         io.to(roomid).emit("message_received", messagePayload);
         console.log(` Message sent in room ${roomid}:`, messagePayload.text);
       } catch (err) {

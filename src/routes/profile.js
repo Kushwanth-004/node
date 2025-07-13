@@ -27,7 +27,6 @@ profileRouter.patch(
     console.log("PATCH /profile/update HIT ✅"); 
     try {
       const user = req.user;
-
       if (req.file) {
         user.photoUrl = req.file.path; // Cloudinary URL
       }
