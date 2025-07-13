@@ -24,7 +24,11 @@ authRouter.post("/signup", async (req, res) => {
     });
 
     // res.cookie("token", token);
-    res.cookie("token", token);
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: true, // ✅ required on Render (HTTPS)
+      sameSite: "None", // ✅ required for cross-origin
+    });
 
     res.json({
       message: "user data saved successfully",
