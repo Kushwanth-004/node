@@ -19,7 +19,7 @@ profileRouter.get("/profile/view", userAuth, async (req, res) => {
   }
 });
 
-profileRouter.patch(
+profileRouter.post(
   "/profile/update",
   userAuth,
   upload.single("photo"),
