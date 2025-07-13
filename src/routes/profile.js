@@ -18,39 +18,65 @@ profileRouter.get("/profile/view", userAuth, async (req, res) => {
     res.status(400).send("Error: " + err.message);
   }
 });
-
 profileRouter.post(
   "/profile/update",
   userAuth,
   upload.single("photo"),
   async (req, res) => {
     try {
-      const user = req.user;
-      if (req.file) {
-        user.photoUrl = req.file.path; // Cloudinary URL
+      // Check if user is authenticated
+      if (!req.user) {
+        return res
+          .status(401)
+          .json({ error: "Unauthorized. User not authenticated." });
       }
 
+      const user = req.user;
+
+      // Debug logs
+      console.log("Authenticated user:", user._id);
+      if (req.file) {
+        console.log(" File uploaded to Cloudinary:", req.file.path);
+        user.photoUrl = req.file.path;
+      } else {
+        console.log("No photo uploaded");
+      }
+
+      // Validate body input (must not throw)
       const isValid = validateEditProfileData(req);
       if (!isValid) {
-        throw new Error("Invalid profile update data");
+        return res.status(400).json({ error: "Invalid profile update data" });
       }
 
-      const allowedFields = ["firstName", "lastName", "about", "skills", "gender", "age"];
+      // Update only allowed fields
+      const allowedFields = [
+        "firstName",
+        "lastName",
+        "about",
+        "skills",
+        "gender",
+        "age",
+      ];
       allowedFields.forEach((field) => {
         if (req.body[field] !== undefined) {
           user[field] = req.body[field];
         }
       });
 
+      // Save updated user
       const updatedUser = await user.save();
 
+      // Respond with updated user
       res.status(200).json({
-        message: "Profile updated successfully",
+        message: " Profile updated successfully",
         data: updatedUser,
       });
     } catch (err) {
-      console.error(err);
-      res.status(400).json({ Error: err.message });
+      console.error(" Error in /profile/update:", err.stack || err);
+      res.status(500).json({
+        error: "Internal Server Error",
+        details: err.message,
+      });
     }
   }
 );
@@ -69,7 +95,10 @@ profileRouter.patch("/profile/forgotPassword", userAuth, async (req, res) => {
     }
 
     const user = req.user;
-    const isPasswordValid = await bcrypt.compare(currentPassword, user.password);
+    const isPasswordValid = await bcrypt.compare(
+      currentPassword,
+      user.password
+    );
     if (!isPasswordValid) {
       throw new Error("Incorrect current password");
     }
