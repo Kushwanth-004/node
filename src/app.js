@@ -14,15 +14,15 @@ dotenv.config();
 const app = express();
 
 const corsOptions = {
-  origin: "https://devtinder-web-p880.onrender.com",
+  origin: "https://devtinder-web-p880.onrender.com", // your frontend domain
   credentials: true,
-  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
+  allowedHeaders: "Origin, X-Requested-With, Content-Type, Accept, Authorization"
 };
 
 app.use(cors(corsOptions));
+app.options("*", cors(corsOptions)); // preflight
 
-// app.options("*", cors(corsOptions));
 
 app.use(express.json());
 app.use(cookieParser());
